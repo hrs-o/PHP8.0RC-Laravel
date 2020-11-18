@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx
+    container_name: "php8-nginx"
+    ports:
+      - "58080:80"
+    volumes:
+      - ./src/:/src
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  app:
+    build: docker/app
+    container_name: "php8-app"
+    environment:
+      COMPOSER_MEMORY_LIMIT: "-1"
+    working_dir: "/src"
+    volumes:
+      - ./src/:/src
+      - ./src/vendor/:/src/vendor:cached
+      - ./docker/app/php.ini:/usr/local/etc/php/php.ini
+
+  mysql:
+    image: mysql:5.7
+    container_name: "php8-mysql"
+    environment:
+      MYSQL_DATABASE: laravel
+      DB_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 43306:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql:cached
+      - ./docker/mysql/my-mysqld.cnf:/etc/mysql/mysql.conf.d/my-mysqld.cnf
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:alpine
+    container_name: "php8-redis"
+    ports:
+      - 46379:6379
+    volumes:
+      - ./docker/redis/data:/data:cached

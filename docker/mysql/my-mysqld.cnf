@@ -1,0 +1,24 @@
+[mysqld]
+sql_mode=TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY  # kamipo TRADITIONAL
+character-set-server = utf8mb4
+collation_server=utf8mb4_unicode_ci
+transaction_isolation = REPEATABLE-READ
+
+slow_query_log
+long_query_time = 1
+log-slow-slave-statements
+slow_query_log_file=mysql_slow.log
+
+myisam_sort_buffer_size = 1M
+
+innodb_strict_mode
+innodb_data_file_path = ibdata1:10M:autoextend
+innodb_data_home_dir = /var/lib/mysql
+innodb_file_per_table
+innodb_buffer_pool_size = 128M
+#innodb_flush_method = O_DIRECT
+innodb_lock_wait_timeout = 120
+innodb_print_all_deadlocks = 1
+
+# timestamp 型の暗黙的なデフォルト値は非推奨なのでデフォルト値が設定されるようにする
+explicit_defaults_for_timestamp = true
